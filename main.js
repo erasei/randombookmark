@@ -1,21 +1,31 @@
-chrome.bookmarks.getTree(function(bookmarkTreeNodes) {
+chrome.browserAction.onClicked.addListener(function() {
+  // Get all bookmarks
+  chrome.bookmarks.getTree(function(bookmarkTreeNodes) {
+    // Collect all bookmarks into an array
     var bookmarks = [];
 
-    function traverseBookmarks(bookmarkNodes) {
-        for (var i = 0; i < bookmarkNodes.length; i++) {
-            if (bookmarkNodes[i].children) {
-                traverseBookmarks(bookmarkNodes[i].children);
-            } else {
-                bookmarks.push(bookmarkNodes[i]);
-            }
+    function processNode(node) {
+      // If the node is a bookmark, add its URL to the bookmarks array
+      if (node.url) {
+        bookmarks.push(node.url);
+      }
+
+      // If the node has children, process each child
+      if (node.children) {
+        for (var i = 0; i < node.children.length; i++) {
+          processNode(node.children[i]);
         }
+      }
     }
 
-    traverseBookmarks(bookmarkTreeNodes);
+    // Start processing at the root of the bookmark tree
+    processNode(bookmarkTreeNodes[0]);
 
-    var randomIndex = Math.floor(Math.random() * bookmarks.length);
-    var randomBookmark = bookmarks[randomIndex];
-
-    chrome.tabs.create({ url: randomBookmark.url });
+    // Open a new tab with a randomly selected bookmark
+    if (bookmarks.length > 0) {
+      var randomIndex = Math.floor(Math.random() * bookmarks.length);
+      chrome.tabs.create({ url: bookmarks[randomIndex] });
+    }
+  });
 });
 

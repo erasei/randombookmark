@@ -1,0 +1,16 @@
+{
+    "manifest_version": 2,
+    "name": "Random Bookmark",
+    "version": "1.0",
+    "description": "Opens a random bookmark in a new tab",
+    "permissions": ["bookmarks", "tabs"],
+    "background": {
+        "scripts": ["main.js"],
+        "persistent": false
+    },
+    "icons": {
+        "16": "surprise.png"
+    },
+    "description": "Icon made by Parzival from www.flaticon.com"
+
+}
